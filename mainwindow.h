@@ -61,8 +61,6 @@ private slots:
 
     void on_manualCinemaButton_clicked();
 
-    void on_startServerButton_clicked();
-
 private:
     Ui::MainWindow *ui;
     ytb_viewer *yViewer;
