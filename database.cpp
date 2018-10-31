@@ -47,7 +47,7 @@ string getGlobalRandomId()
 
 int getCountRandomCat(std::string id)
 {
-    int count;
+    int count = 0;
     sqlite3pp::database db(DB_PATH);
 
     std::string query = "select count(*) from t_songs where id=\""+id+"\" and not link=\"Empty\" and done=\"False\"";
@@ -99,7 +99,7 @@ string getCatRandomId(std::string cat)
 
 std::vector<std::string> getAllCat()
 {
-    int count;
+    int count = 0;
     sqlite3pp::database db(DB_PATH);
 
     std::string query = "select count(*) from t_categories";
@@ -186,7 +186,7 @@ std::string getPlayerStatus()
 {
     std::string model;
 
-    int count;
+    int count = 0;
     sqlite3pp::database db(DB_PATH);
 
     std::string query = "select count(*) from t_players";
