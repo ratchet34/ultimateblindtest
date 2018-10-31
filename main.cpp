@@ -18,6 +18,7 @@ int main(int argc, char *argv[])
 
     MainWindow window;
     window.setCategories(getAllCat());
+    window.connectTcp();
     window.show();
     return app.exec();
 }

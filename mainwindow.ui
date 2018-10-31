@@ -204,14 +204,14 @@
            </item>
            <item>
             <layout class="QGridLayout" name="gridLayout_2">
-             <item row="2" column="0">
+             <item row="3" column="0">
               <widget class="QPushButton" name="resetScoreButton">
                <property name="text">
                 <string>Reset Scores</string>
                </property>
               </widget>
              </item>
-             <item row="2" column="1">
+             <item row="3" column="1">
               <widget class="QPushButton" name="resetDoneButton">
                <property name="text">
                 <string>Reset Done</string>
@@ -232,14 +232,14 @@
                </property>
               </widget>
              </item>
-             <item row="1" column="0">
+             <item row="2" column="0">
               <widget class="QPushButton" name="revealButton">
                <property name="text">
                 <string>Reveal Song</string>
                </property>
               </widget>
              </item>
-             <item row="1" column="1">
+             <item row="2" column="1">
               <widget class="QPushButton" name="addTimeButton">
                <property name="text">
                 <string>Add 15sec</string>

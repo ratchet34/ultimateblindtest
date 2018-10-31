@@ -170,7 +170,9 @@ void setNotFoundAll()
     db.execute(query.c_str());
 }
 
-void checkAnswers(string artist, string song, string in)
+//Folowing code commented after moving to tcp packets
+
+/*void checkAnswers(string artist, string song, string in)
 {
     sqlite3pp::database db("/home/ratchet/ubt/data.sqlite");
     std::string query = "update t_players set found_a=\"true\" where artist=\""+artist+"\"";
@@ -179,9 +181,9 @@ void checkAnswers(string artist, string song, string in)
     db.execute(query.c_str());
     query = "update t_players set found_i=\"true\" where h_in=\""+in+"\"";
     db.execute(query.c_str());
-}
+}*/
 
-std::string getPlayerStatus()
+/*std::string getPlayerStatus()
 {
     std::string model;
 
@@ -255,4 +257,4 @@ std::string getPlayerStatus()
     }
 
     return model;
-}
+}*/

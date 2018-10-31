@@ -17,7 +17,7 @@ void setAllUndone();
 void updateSong(std::string id, std::string artist, std::string song_name, std::string in, std::string link, std::string time);
 void setSongRunning(std::string status);
 void setNotFoundAll();
-void checkAnswers(std::string artist, std::string song, std::string in);
+/*void checkAnswers(std::string artist, std::string song, std::string in);*/
 std::string getPlayerStatus();
 
 

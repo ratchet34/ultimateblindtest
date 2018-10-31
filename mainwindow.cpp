@@ -9,6 +9,7 @@
 #include <QString>
 #include <QTimer>
 #include <QMessageBox>
+#include <QTextCodec>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -39,9 +40,9 @@ void MainWindow::setYtbUrl(QString url)
 
 void MainWindow::timerTick()
 {
-    checkAnswers(m_song->getArtist(), m_song->getSongName(), m_song->getIn());
-    std::string playersListText = getPlayerStatus();
-    ui->playersList->setText(QString::fromStdString(playersListText));
+    //checkAnswers(m_song->getArtist(), m_song->getSongName(), m_song->getIn());
+    //std::string playersListText = getPlayerStatus();
+    //ui->playersList->setText(QString::fromStdString(playersListText));
     ui->countdownLabel->setText(QString::number(ui->countdownLabel->text().toInt() - 1));
     ui->progressBar->setValue(ui->progressBar->value()+1);
     if (ui->countdownLabel->text().toInt() == 0)
@@ -291,5 +292,28 @@ void MainWindow::on_zeroPointButton_clicked()
 
 void MainWindow::on_manualCinemaButton_clicked()
 {
-    yViewer->clickCinema();
+    readTcpData();
+    //yViewer->clickCinema();
+}
+
+void MainWindow::connectTcp()
+{
+    QByteArray data; // <-- fill with data
+
+    _pSocket = new QTcpSocket( this ); // <-- needs to be a member variable: QTcpSocket * _pSocket;
+    connect( _pSocket, SIGNAL(readyRead()), SLOT(readTcpData()) );
+
+    _pSocket->connectToHost("127.0.0.1", 50885);
+    setStatusMessage("Tcp connected, reading...");
+    if( _pSocket->waitForConnected() ) {
+        _pSocket->write( data );
+    }
+}
+
+void MainWindow::readTcpData()
+{
+    QByteArray data = _pSocket->readAll();
+    QString s_data = QString::fromUtf8(data.data());
+    QString DataAsString = QTextCodec::codecForMib(1015)->toUnicode(data);
+    setStatusMessage(s_data);
 }

@@ -27,6 +27,7 @@ public:
     void setStatusMessage(QString message);
     void setCategories(std::vector<std::string> categories);
     void reveal();
+    void connectTcp();
     ~MainWindow();
 
 public slots:
@@ -61,6 +62,8 @@ private slots:
 
     void on_manualCinemaButton_clicked();
 
+    void readTcpData();
+
 private:
     Ui::MainWindow *ui;
     ytb_viewer *yViewer;
@@ -68,6 +71,7 @@ private:
     QStandardItemModel *teamModel;
     song *m_song;
     int time;
+    QTcpSocket * _pSocket;
 };
 
 #endif // MAINWINDOW_H
