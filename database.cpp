@@ -4,12 +4,13 @@
 #include <vector>
 
 using namespace std;
+#define DB_PATH         "data.sqlite"
 
 string getFieldFromId(std::string field, std::string id)
 {
     string out;
     try{
-        sqlite3pp::database db("/home/ratchet/ubt/data.sqlite");
+        sqlite3pp::database db(DB_PATH);
 
         std::string query ="select `"+field+"` from t_songs where id=\""+id+"\";";
         sqlite3pp::query qry(db, query.c_str());
@@ -29,7 +30,7 @@ string getFieldFromId(std::string field, std::string id)
 string getGlobalRandomId()
 {
     string out;
-    sqlite3pp::database db("/home/ratchet/ubt/data.sqlite");
+    sqlite3pp::database db(DB_PATH);
 
     std::string query ="select id from t_songs where not link=\"Empty\" and done=\"False\" order by random() limit 1";
     sqlite3pp::query qry(db, query.c_str());
@@ -47,7 +48,7 @@ string getGlobalRandomId()
 int getCountRandomCat(std::string id)
 {
     int count;
-    sqlite3pp::database db("/home/ratchet/ubt/data.sqlite");
+    sqlite3pp::database db(DB_PATH);
 
     std::string query = "select count(*) from t_songs where id=\""+id+"\" and not link=\"Empty\" and done=\"False\"";
     sqlite3pp::query qry_count(db, query.c_str());
@@ -64,7 +65,7 @@ std::tuple<std::string, int> getRandomTupleCat(std::string cat)
 {
     string out;
     int count;
-    sqlite3pp::database db("/home/ratchet/ubt/data.sqlite");
+    sqlite3pp::database db(DB_PATH);
 
     std::string query = "select song_id from "+cat+" order by random() limit 1";
     sqlite3pp::query qry(db, query.c_str());
@@ -90,7 +91,7 @@ string getCatRandomId(std::string cat)
 
     std::string out = std::get<0>(temp_tuple);
 
-    sqlite3pp::database db("/home/ratchet/ubt/data.sqlite");
+    sqlite3pp::database db(DB_PATH);
     std::string query = "update t_songs set done=\"True\" where id=\""+out+"\"";
     db.execute(query.c_str());
     return out;
@@ -99,7 +100,7 @@ string getCatRandomId(std::string cat)
 std::vector<std::string> getAllCat()
 {
     int count;
-    sqlite3pp::database db("/home/ratchet/ubt/data.sqlite");
+    sqlite3pp::database db(DB_PATH);
 
     std::string query = "select count(*) from t_categories";
     sqlite3pp::query qry_count(db, query.c_str());
@@ -129,7 +130,7 @@ std::vector<std::string> getAllCat()
 std::string getCatTable(std::string catName)
 {
     string out = "not_found";
-    sqlite3pp::database db("/home/ratchet/ubt/data.sqlite");
+    sqlite3pp::database db(DB_PATH);
 
     std::string query ="select table_name from t_categories where cat_name =\""+catName+"\"";
     sqlite3pp::query qry(db, query.c_str());
@@ -144,35 +145,35 @@ std::string getCatTable(std::string catName)
 
 void setAllUndone()
 {
-    sqlite3pp::database db("/home/ratchet/ubt/data.sqlite");
+    sqlite3pp::database db(DB_PATH);
     std::string query = "update t_songs set done=\"False\"";
     db.execute(query.c_str());
 }
 
 void updateSong(std::string id, std::string artist, std::string song_name, std::string in, std::string link, std::string time)
 {
-    sqlite3pp::database db("/home/ratchet/ubt/data.sqlite");
+    sqlite3pp::database db(DB_PATH);
     std::string query = "update t_songs set artist=\""+artist+"\", song=\""+song_name+"\", `in`=\""+in+"\", link=\""+link+"\", time=\""+time+"\" where id=\""+id+"\"";
     db.execute(query.c_str());
 }
 
 void setSongRunning(std::string status)
 {
-    sqlite3pp::database db("/home/ratchet/ubt/data.sqlite");
+    sqlite3pp::database db(DB_PATH);
     std::string query = "update t_config set value=\""+status+"\" where param=\"song_running\"";
     db.execute(query.c_str());
 }
 
 void setNotFoundAll()
 {
-    sqlite3pp::database db("/home/ratchet/ubt/data.sqlite");
+    sqlite3pp::database db(DB_PATH);
     std::string query = "update t_players set artist=\"\", song=\"\", h_in=\"\", found_a=\"false\", found_s=\"false\", found_i=\"false\"";
     db.execute(query.c_str());
 }
 
 void checkAnswers(string artist, string song, string in)
 {
-    sqlite3pp::database db("/home/ratchet/ubt/data.sqlite");
+    sqlite3pp::database db(DB_PATH);
     std::string query = "update t_players set found_a=\"true\" where artist=\""+artist+"\"";
     db.execute(query.c_str());
     query = "update t_players set found_s=\"true\" where song=\""+song+"\"";
@@ -186,7 +187,7 @@ std::string getPlayerStatus()
     std::string model;
 
     int count;
-    sqlite3pp::database db("/home/ratchet/ubt/data.sqlite");
+    sqlite3pp::database db(DB_PATH);
 
     std::string query = "select count(*) from t_players";
     sqlite3pp::query qry_count(db, query.c_str());
