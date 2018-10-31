@@ -322,12 +322,12 @@ void MainWindow::nouvelleConnexion()
 
     connect(nouveauClient, SIGNAL(readyRead()), this, SLOT(donneesRecues()));
     connect(nouveauClient, SIGNAL(disconnected()), this, SLOT(deconnexionClient()));
-    connect(nouveauClient, SIGNAL(error()), this, SLOT(testerror()));
+    connect(nouveauClient, SIGNAL(error(QAbstractSocket::SocketError)), this, SLOT(testerror(QAbstractSocket::SocketError)));
 }
 
-void MainWindow::testerror()
+void MainWindow::testerror(QAbstractSocket::SocketError)
 {
-    setStatusMessage("error");
+    setStatusMessage("error tbd");
 }
 
 void MainWindow::donneesRecues()
