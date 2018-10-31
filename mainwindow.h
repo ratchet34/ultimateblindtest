@@ -6,6 +6,7 @@
 #include <QString>
 #include <QTimer>
 #include <QStandardItemModel>
+#include <QtNetwork>
 #include <vector>
 #include <string>
 
@@ -62,7 +63,13 @@ private slots:
 
     void on_manualCinemaButton_clicked();
 
-    void readTcpData();
+    void nouvelleConnexion();
+
+    void donneesRecues();
+
+    void deconnexionClient();
+
+    void testerror();
 
 private:
     Ui::MainWindow *ui;
@@ -71,7 +78,9 @@ private:
     QStandardItemModel *teamModel;
     song *m_song;
     int time;
-    QTcpSocket * _pSocket;
+    QTcpServer *serveur;
+    QList<QTcpSocket *> clients;
+    quint16 tailleMessage;
 };
 
 #endif // MAINWINDOW_H
