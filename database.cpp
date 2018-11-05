@@ -157,19 +157,6 @@ void updateSong(std::string id, std::string artist, std::string song_name, std::
     db.execute(query.c_str());
 }
 
-void setSongRunning(std::string status)
-{
-    sqlite3pp::database db(DB_PATH);
-    std::string query = "update t_config set value=\""+status+"\" where param=\"song_running\"";
-    db.execute(query.c_str());
-}
-
-void setNotFoundAll()
-{
-    sqlite3pp::database db(DB_PATH);
-    std::string query = "update t_players set artist=\"\", song=\"\", h_in=\"\", found_a=\"false\", found_s=\"false\", found_i=\"false\"";
-    db.execute(query.c_str());
-}
 
 //Folowing code commented after moving to tcp packets
 

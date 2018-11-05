@@ -13,6 +13,7 @@
 #include <iostream>
 #include <cstring>
 #include <cassert>
+#include <algorithm>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -54,7 +55,6 @@ void MainWindow::timerTick()
 
 void MainWindow::reveal()
 {
-    setSongRunning("false");
     yViewer->showYtbViewer();
     ui->verticalWidgetAnswers->show();
     timer->stop();
@@ -166,8 +166,7 @@ void MainWindow::on_startButton_clicked()
     }
 
     ui->playersList->setText("");
-    setNotFoundAll();
-    setSongRunning("True");
+    resetPlayers();
 
     ui->verticalWidgetAnswers->hide();
 
@@ -340,9 +339,11 @@ void MainWindow::donneesRecues()
 
     QByteArray readtest = socket->readAll();
 
-    QString message(readtest);
-    setStatusMessage(message);
-
+    std::string message(readtest);
+    if (message.length() > 0) {
+    char *mess = &message[0u];
+    checkAnswer(mess);
+    }
 }
 
 void MainWindow::deconnexionClient()
@@ -399,4 +400,163 @@ size_t MainWindow::levenshtein_distance(const char* s, size_t n, const char* t, 
 
    return r;
 }
+
+void MainWindow::checkAnswer(char* answer)
+{
+    char *player = "nothing";
+    size_t playerId;
+    char *name = "nothing";
+    char *artist = "nothing";
+    char *heard = "nothing";
+
+    bool newPlayer = true;
+
+    char * pch;
+    int i = 0;
+    pch = strtok (answer,"|");
+    while (pch != NULL)
+    {
+        if (i == 0)
+        {
+            player = pch;
+        }
+        else if (i == 1)
+        {
+            artist = pch;
+        }
+        else if (i == 2)
+        {
+            name = pch;
+        }
+        else if (i == 3)
+        {
+            heard = pch;
+        }
+
+        i++;
+      pch = strtok (NULL, "|");
+    }
+
+
+    if (players.size() > 0)
+    {
+        for(size_t j = 0; j<players.size(); j++)
+        {
+            if (players[j][0] == player)
+            {
+                newPlayer = false;
+                playerId = j;
+            }
+        }
+    }
+
+    if (newPlayer)
+    {
+        std::vector<QString> nplayer;
+        nplayer.push_back(player);
+
+        double artistDist = static_cast<double>(levenshtein_distance(artist, strlen(artist),m_song->getArtist().c_str(),m_song->getArtist().length()))/static_cast<double>(m_song->getArtist().length());
+        if (artistDist < 0.2 and m_song->getArtist() != "")
+        {
+            nplayer.push_back("Artist found");
+        }
+        else
+        {
+            nplayer.push_back("");
+        }
+
+        double nameDist = static_cast<double>(levenshtein_distance(name, strlen(name),m_song->getSongName().c_str(),m_song->getSongName().length()))/static_cast<double>(m_song->getSongName().length());
+        if (nameDist < 0.2 and m_song->getSongName() != "")
+        {
+            nplayer.push_back("Song name found");
+        }
+        else
+        {
+            nplayer.push_back("");
+        }
+
+        double heardDist = static_cast<double>(levenshtein_distance(heard, strlen(heard),m_song->getIn().c_str(),m_song->getIn().length()))/static_cast<double>(m_song->getIn().length());
+        if (heardDist < 0.2 and m_song->getIn() != "")
+        {
+            nplayer.push_back("Heard in found");
+        }
+        else
+        {
+            nplayer.push_back("");
+        }
+
+        players.push_back(nplayer);
+
+    }
+    else
+    {
+        if (players[playerId][1] != "Artist found")
+        {
+            double artistDist = static_cast<double>(levenshtein_distance(artist, strlen(artist),m_song->getArtist().c_str(),m_song->getArtist().length()))/static_cast<double>(m_song->getArtist().length());
+            if (artistDist < 0.2 and m_song->getArtist() != "")
+            {
+                players[playerId][1] = "Artist found";
+            }
+            else
+            {
+                players[playerId][1] = "";
+            }
+        }
+
+        if (players[playerId][2] != "Song name found")
+        {
+            double nameDist = static_cast<double>(levenshtein_distance(name, strlen(name),m_song->getSongName().c_str(),m_song->getSongName().length()))/static_cast<double>(m_song->getSongName().length());
+            if (nameDist < 0.2 and m_song->getSongName() != "")
+            {
+                players[playerId][2] = "Song name found";
+            }
+            else
+            {
+                players[playerId][2] = "";
+            }
+        }
+
+
+        if (players[playerId][3] != "Heard in found")
+        {
+            double heardDist = static_cast<double>(levenshtein_distance(heard, strlen(heard),m_song->getIn().c_str(),m_song->getIn().length()))/static_cast<double>(m_song->getIn().length());
+            if (heardDist < 0.2 and m_song->getIn() != "")
+            {
+                players[playerId][3] = "Heard in found";
+            }
+            else
+            {
+                players[playerId][3] = "";
+            }
+        }
+    }
+    updatePlayers();
+}
+
+void MainWindow::updatePlayers()
+{
+    ui->playersList->clear();
+    if (players.size() > 0) {
+        for(size_t i = 0; i<players.size(); i++)
+        {
+            ui->playersList->append(players[i][0] + " - " + players[i][1] + " - " + players[i][2] + " - " + players[i][3] + "\n");
+        }
+    }
+
+}
+
+void MainWindow::resetPlayers()
+{
+    ui->playersList->clear();
+    if (players.size() > 0) {
+        for(size_t i = 0; i<players.size(); i++)
+        {
+            for(size_t j = 1; j<players[i].size(); j++)
+            {
+                players[i][j] = "";
+            }
+        }
+    }
+}
+
 

@@ -30,6 +30,9 @@ public:
     void reveal();
     void connectTcp();
     size_t levenshtein_distance(const char* s, size_t n, const char* t, size_t m);
+    void checkAnswer(char* answer);
+    void updatePlayers();
+    void resetPlayers();
     ~MainWindow();
 
 public slots:
