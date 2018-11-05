@@ -10,7 +10,7 @@ Attention l'algo supposé être gentil avec la casse et les fautes de frappe est
 Mais genre pas du tout.
 
 En bonus, le script php pour balancer des réponses (ouais c'est dégueux je sais) :
-
+```
 <?php
 if (isset($_POST['artist'])) {
 ini_set('display_errors', true); error_reporting(E_ALL); // <- for debugging purposes only
@@ -70,3 +70,4 @@ else {
 <?php
 }
 ?>
+```
