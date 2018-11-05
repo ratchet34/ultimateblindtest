@@ -1,7 +1,0 @@
-#include "db.h"
-#include <sqlite3.h>
-
-db::db()
-{
-    int rc = sqlite3_open("data.sqlite")
-}
