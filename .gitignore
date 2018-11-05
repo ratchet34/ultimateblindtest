@@ -1,0 +1,5 @@
+ubt.pro.user*
+.qmake*
+Makefile
+ubt
+*.o
