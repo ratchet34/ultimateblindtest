@@ -313,6 +313,12 @@ void MainWindow::connectTcp()
     tailleMessage = 0;
 }
 
+void MainWindow::testerror(QAbstractSocket::SocketError socketError)
+{
+    //setStatusMessage(socketError.);
+    qDebug() << socketError;
+}
+
 void MainWindow::nouvelleConnexion()
 {
     setStatusMessage(tr("<em>Un nouveau client vient de se connecter</em>"));
@@ -322,12 +328,7 @@ void MainWindow::nouvelleConnexion()
 
     connect(nouveauClient, SIGNAL(readyRead()), this, SLOT(donneesRecues()));
     connect(nouveauClient, SIGNAL(disconnected()), this, SLOT(deconnexionClient()));
-    connect(nouveauClient, SIGNAL(error(QAbstractSocket::SocketError)), this, SLOT(testerror(QAbstractSocket::SocketError)));
-}
-
-void MainWindow::testerror(QAbstractSocket::SocketError)
-{
-    setStatusMessage("error tbd");
+    connect (nouveauClient, static_cast<void (QTcpSocket::*)(QAbstractSocket::SocketError)>(&QAbstractSocket::error), this, &MainWindow::testerror);
 }
 
 void MainWindow::donneesRecues()
@@ -357,14 +358,11 @@ void MainWindow::donneesRecues()
 
 
     // Si ces lignes s'exécutent, c'est qu'on a reçu tout le message : on peut le récupérer !
-    QString message;
+    QByteArray message;
     in >> message;
 
+    //setStatusMessage(message);
 
-    // 2 : on renvoie le message à tous les clients
-    setStatusMessage(message);
-
-    // 3 : remise de la taille du message à 0 pour permettre la réception des futurs messages
     tailleMessage = 0;
 }
 

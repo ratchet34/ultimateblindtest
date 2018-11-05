@@ -34,6 +34,8 @@ public:
 public slots:
     void timerTick();
 
+    void testerror(QAbstractSocket::SocketError);
+
 private slots:
     void on_addTeamButton_clicked();
 
@@ -69,7 +71,6 @@ private slots:
 
     void deconnexionClient();
 
-    void testerror();
 
 private:
     Ui::MainWindow *ui;
