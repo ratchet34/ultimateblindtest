@@ -4,7 +4,7 @@
 #include <vector>
 
 using namespace std;
-#define DB_PATH         "data.sqlite"
+#define DB_PATH "/home/ratchet/ubt/data.sqlite"
 
 string getFieldFromId(std::string field, std::string id)
 {

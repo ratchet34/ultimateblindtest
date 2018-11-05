@@ -10,6 +10,9 @@
 #include <QTimer>
 #include <QMessageBox>
 #include <QTextCodec>
+#include <iostream>
+#include <cstring>
+#include <cassert>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -40,9 +43,6 @@ void MainWindow::setYtbUrl(QString url)
 
 void MainWindow::timerTick()
 {
-    //checkAnswers(m_song->getArtist(), m_song->getSongName(), m_song->getIn());
-    //std::string playersListText = getPlayerStatus();
-    //ui->playersList->setText(QString::fromStdString(playersListText));
     ui->countdownLabel->setText(QString::number(ui->countdownLabel->text().toInt() - 1));
     ui->progressBar->setValue(ui->progressBar->value()+1);
     if (ui->countdownLabel->text().toInt() == 0)
@@ -333,37 +333,16 @@ void MainWindow::nouvelleConnexion()
 
 void MainWindow::donneesRecues()
 {
-    // 1 : on reçoit un paquet (ou un sous-paquet) d'un des clients
-
-    // On détermine quel client envoie le message (recherche du QTcpSocket du client)
     QTcpSocket *socket = qobject_cast<QTcpSocket *>(sender());
     socket->waitForBytesWritten(3000);
-    if (socket == 0) // Si par hasard on n'a pas trouvé le client à l'origine du signal, on arrête la méthode
+    if (socket == 0)
         return;
 
-    // Si tout va bien, on continue : on récupère le message
-    QDataStream in(socket);
+    QByteArray readtest = socket->readAll();
 
-    if (tailleMessage == 0) // Si on ne connaît pas encore la taille du message, on essaie de la récupérer
-    {
-        if (socket->bytesAvailable() < (int)sizeof(quint64)) // On n'a pas reçu la taille du message en entier
-             return;
+    QString message(readtest);
+    setStatusMessage(message);
 
-        in >> tailleMessage; // Si on a reçu la taille du message en entier, on la récupère
-    }
-
-    // Si on connaît la taille du message, on vérifie si on a reçu le message en entier
-    if (socket->bytesAvailable() < tailleMessage) // Si on n'a pas encore tout reçu, on arrête la méthode
-        return;
-
-
-    // Si ces lignes s'exécutent, c'est qu'on a reçu tout le message : on peut le récupérer !
-    QByteArray message;
-    in >> message;
-
-    //setStatusMessage(message);
-
-    tailleMessage = 0;
 }
 
 void MainWindow::deconnexionClient()
@@ -378,3 +357,46 @@ void MainWindow::deconnexionClient()
 
     socket->deleteLater();
 }
+
+size_t MainWindow::levenshtein_distance(const char* s, size_t n, const char* t, size_t m)
+{
+   ++n; ++m;
+   size_t* d = new size_t[n * m];
+
+   memset(d, 0, sizeof(size_t) * n * m);
+
+   for (size_t i = 1, im = 0; i < m; ++i, ++im)
+   {
+      for (size_t j = 1, jn = 0; j < n; ++j, ++jn)
+      {
+         if (s[jn] == t[im])
+         {
+            d[(i * n) + j] = d[((i - 1) * n) + (j - 1)];
+         }
+         else
+         {
+            d[(i * n) + j] = std::min(d[(i - 1) * n + j] + 1, /* A deletion. */
+                                 std::min(d[i * n + (j - 1)] + 1, /* An insertion. */
+                                     d[(i - 1) * n + (j - 1)] + 1)); /* A substitution. */
+         }
+      }
+   }
+
+#ifdef DEBUG_PRINT
+   for (size_t i = 0; i < m; ++i)
+   {
+      for (size_t j = 0; j < n; ++j)
+      {
+         cout << d[(i * n) + j] << " ";
+      }
+      cout << endl;
+   }
+#endif
+
+   size_t r = d[n * m - 1];
+
+   delete [] d;
+
+   return r;
+}
+

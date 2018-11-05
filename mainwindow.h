@@ -29,6 +29,7 @@ public:
     void setCategories(std::vector<std::string> categories);
     void reveal();
     void connectTcp();
+    size_t levenshtein_distance(const char* s, size_t n, const char* t, size_t m);
     ~MainWindow();
 
 public slots:
@@ -82,6 +83,7 @@ private:
     QTcpServer *serveur;
     QList<QTcpSocket *> clients;
     quint16 tailleMessage;
+    std::vector< std::vector<QString> > players;
 };
 
 #endif // MAINWINDOW_H
